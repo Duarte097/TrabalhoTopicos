@@ -12,9 +12,9 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "tb_gateway") // Define o noma da tabel
+@Table(name = "tb_atuador") // Define o noma da tabel
 @Data
-public class Gateway {
+public class Atuador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,15 +24,7 @@ public class Gateway {
     @Column(nullable = false)
     private String nome;
 
-        
-    @Column(nullable = false)
-    private String descricao;
-
-        
-    @Column(nullable = false)
-    private String endereco;
-
-    @OneToMany(mappedBy = "gateway")
+    @OneToMany(mappedBy = "atuador")
     private List<Dispositivo> dispositivo;
 
 }

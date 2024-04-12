@@ -1,11 +1,14 @@
 package br.edu.utfpr.todoapi.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -26,4 +29,7 @@ public class Sensor {
 
     @Column(name = "tipo")
     private String tipo;
+
+    @OneToMany(mappedBy = "medicao")
+    private List<Medicao> medicao;
 }

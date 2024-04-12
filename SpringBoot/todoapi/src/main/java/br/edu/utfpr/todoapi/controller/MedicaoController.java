@@ -14,22 +14,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.edu.utfpr.todoapi.dto.SensorDTO;
+import br.edu.utfpr.todoapi.dto.MedicaoDTO;
 import br.edu.utfpr.todoapi.exception.NotFoundException;
-import br.edu.utfpr.todoapi.model.Sensor;
-import br.edu.utfpr.todoapi.service.SensorService;
+import br.edu.utfpr.todoapi.model.Medicao;
+import br.edu.utfpr.todoapi.service.MedicaoService;
 
 
 @RestController
-@RequestMapping("/sensor")
-public class SensorController {
+@RequestMapping("/medicao")
+public class MedicaoController {
     @Autowired
-    private SensorService sensorService;
+    private MedicaoService medicaoService;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody SensorDTO dto) {
+    public ResponseEntity<Object> create(@RequestBody MedicaoDTO dto) {
         try {
-            var res = sensorService.create(dto);
+            var res = medicaoService.create(dto);
 
             // Seta o status para 201 (CREATED) e devolve
             // o objeto Pessoa em JSON.
@@ -45,8 +45,8 @@ public class SensorController {
      * Obter todas as pessoas do DB.
      */
     @GetMapping
-    public List<Sensor> getAll() {
-        return sensorService.getAll();
+    public List<Medicao> getAll() {
+        return medicaoService.getAll();
     }
 
     /**
@@ -54,19 +54,19 @@ public class SensorController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable("id") long id) {
-        var sen = sensorService.getById(id);
+        var medi = medicaoService.getById(id);
         
-        return sen.isPresent()
-            ? ResponseEntity.ok().body(sen.get())
+        return medi.isPresent()
+            ? ResponseEntity.ok().body(medi.get())
             : ResponseEntity.notFound().build();
     }
     
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable long id,
-        @RequestBody SensorDTO dto) {
+        @RequestBody MedicaoDTO dto) {
             try {
-                return ResponseEntity.ok().body(sensorService.update(id, dto));
+                return ResponseEntity.ok().body(medicaoService.update(id, dto));
             } catch(NotFoundException ex) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
             } catch(Exception ex) {
@@ -77,7 +77,7 @@ public class SensorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable("id") long id){
         try {
-            sensorService.delete(id);
+            medicaoService.delete(id);
             return ResponseEntity.ok().build();
         } catch(NotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

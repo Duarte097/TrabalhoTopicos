@@ -2,5 +2,6 @@ package br.edu.utfpr.todoapi.dto;
 
 public record SensorDTO(
     String nome,
-    String tipo) {
+    String tipo,
+    Long idMedicao) {
 }
