@@ -30,6 +30,6 @@ public class Sensor {
     @Column(name = "tipo")
     private String tipo;
 
-    @OneToMany(mappedBy = "medicao")
+    @OneToMany
     private List<Medicao> medicao;
 }

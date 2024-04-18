@@ -35,4 +35,7 @@ public class Dispositivo {
 
     @OneToMany
     private List<Sensor> sensor;
+
+    @OneToMany
+    private List<Atuador> atuador;
 }
