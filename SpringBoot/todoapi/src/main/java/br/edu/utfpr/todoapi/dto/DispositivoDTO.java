@@ -6,6 +6,7 @@ public record DispositivoDTO(
     @NotBlank String nome,
     @NotBlank String descricao,
     String localizacao,
+    String endereco,
     Long idGateway,
     Long idSensor,
     Long idAtuador) {

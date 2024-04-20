@@ -7,8 +7,7 @@ Content-Type: application/json
 {
     "nome": "Jucasauro Franciscon",
     "descricao": "Teste",
-    "endereco": "Rua 7 de Setembro, 1750",
-    "dispositivo": "Celular"
+    "endereco": "Rua 7 de Setembro, 1750"
 }
 
 ### GET ALL
