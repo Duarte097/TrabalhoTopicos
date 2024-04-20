@@ -33,6 +33,12 @@ public class Dispositivo {
     @Column(nullable = false)
     private String localizacao;
 
+    @Column(nullable = false)
+    private String endereco;
+
     @OneToMany
     private List<Sensor> sensor;
+
+    @OneToMany
+    private List<Atuador> atuador;
 }

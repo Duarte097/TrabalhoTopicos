@@ -1,6 +1,7 @@
 package br.edu.utfpr.todoapi.dto;
 
-public class GatewayDTO {
-    
-
+public record GatewayDTO(
+    String nome,
+    String descricao,
+    String endereco) {
 }

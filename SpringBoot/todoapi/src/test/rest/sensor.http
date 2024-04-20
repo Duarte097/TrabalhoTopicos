@@ -1,0 +1,29 @@
+@URL=http://localhost:8080/sensor
+
+### CREATE
+POST {{URL}}
+Content-Type: application/json
+
+{
+    "nome": "Jucasauro Franciscon",
+    "tipo": "Teste"
+}
+
+### GET ALL
+GET {{URL}}
+
+### GET BY ID
+GET {{URL}}/1
+
+
+### UPDATE
+PUT {{URL}}/1
+Content-Type: application/json
+
+{
+    "nome": "Marcelo Alberton",
+    "tipo": "Teste2"
+}
+
+### DELETE
+DELETE {{URL}}/1

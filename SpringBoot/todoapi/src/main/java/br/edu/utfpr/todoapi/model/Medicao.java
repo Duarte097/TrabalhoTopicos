@@ -1,35 +1,29 @@
 package br.edu.utfpr.todoapi.model;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity //Entidade gerenciada pelo JPA (pode ser persistida)
-@Table(name = "tb_sensor") // Define o noma da tabel
+@Table(name = "tb_medicao") // Define o noma da tabel
 @Data
-public class Sensor {
-
+public class Medicao {
     @ManyToOne
-    private Dispositivo dispositivo;
+    private Sensor sensor;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; 
     
     @Column(nullable = false)
-    private String nome;
+    private Float valor;
 
-    @Column(name = "tipo")
-    private String tipo;
+    @Column(nullable = false)
+    private String data;
 
-    @OneToMany
-    private List<Medicao> medicao;
 }

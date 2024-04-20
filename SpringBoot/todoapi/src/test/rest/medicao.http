@@ -1,0 +1,29 @@
+@URL=http://localhost:8080/medicao
+
+### CREATE
+POST {{URL}}
+Content-Type: application/json
+
+{
+    "valor": "4500",
+    "data": "22/12/2012",
+}
+
+### GET ALL
+GET {{URL}}
+
+### GET BY ID
+GET {{URL}}/2
+
+
+### UPDATE
+PUT {{URL}}/2
+Content-Type: application/json
+
+{
+    "valor": "5000",
+    "data": "13/11/2022"
+}
+
+### DELETE
+DELETE {{URL}}/2

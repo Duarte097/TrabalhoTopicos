@@ -1,0 +1,32 @@
+@URL=http://localhost:8080/dispositivo
+
+### CREATE
+POST {{URL}}
+Content-Type: application/json
+
+{
+    "nome": "Jucasauro Franciscon",
+    "descricao": "Teste",
+    "localizacao": "Teste",
+    "endereco": "Rua 7 de setembro, 1750"
+}
+
+### GET ALL
+GET {{URL}}
+
+### GET BY ID
+GET {{URL}}/2
+
+
+### UPDATE
+PUT {{URL}}/2
+Content-Type: application/json
+
+{
+    "nome": "Marcelo Alberton",
+    "descricao": "casa",
+    "endereco": "Rua Amazonas"
+}
+
+### DELETE
+DELETE {{URL}}/2
