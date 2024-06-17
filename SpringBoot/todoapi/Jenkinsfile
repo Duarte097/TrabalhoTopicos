@@ -1,3 +1,4 @@
+#!Downloads/groovy-all-4.0.0-groovydoc
 pipeline {
     agent any
 
