@@ -2,11 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Clona o repositório') {
-            steps {
-                git 'https://github.com/Duarte097/TrabalhoTopicos.git'
-            }
-        }
         stage('Build da imagem Docker') {
             steps {
                 sh 'docker build -t todoapi .'
