@@ -1,13 +1,37 @@
-pipeline{
-    agent none
-    stages{
-        stage('Build'){
-            agent {
-                docker{image 'maven'}
+pipeline {
+    agent any
+
+    stages {
+        stage('Clona o repositório') {
+            steps {
+                git 'https://github.com/Duarte097/TrabalhoTopicos.git'
             }
-            steps{
-                sh "mvn package -Dmaven.test.skiptrue"
+        }
+        stage('Build da imagem Docker') {
+            steps {
+                sh 'docker build -t todoapi .'
             }
+        }
+        stage('Remove container e imagem antigos') {
+            steps {
+                sh 'docker rm -f todoapi'
+                sh 'docker rmi todoapi'
+            }
+        }
+        stage('Crie um novo container') {
+            steps {
+                sh 'docker run -d --name todoapi todoapi'
+            }
+        }
+        stage('Inicie o container') {
+            steps {
+                sh 'docker start todoapi'
+            }
+        }
+    }
+    post {
+        always {
+            mail to: 'leonardo_Wow@outlook.com', subject: 'Job concluído', body: 'O job foi executado com sucesso.'
         }
     }
 }
