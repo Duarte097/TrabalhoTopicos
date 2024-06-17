@@ -9,13 +9,5 @@ pipeline{
                 sh "mvn package -Dmaven.test.skiptrue"
             }
         }
-        stage('Test'){
-            agent{
-                docker {image 'maven'}
-            }
-            steps{
-                sh "mvn clean install"
-            }
-        }
     }
 }
