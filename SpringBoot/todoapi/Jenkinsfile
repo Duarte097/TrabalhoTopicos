@@ -1,64 +1,61 @@
 pipeline {
     agent any
-    environment {
-        DOCKER_IMAGE = 'todoapi-spring-app'
-        DOCKER_CONTAINER = 'todoapi'
-    }
+
     stages {
-        stage('Clonar Repositório') {
+        stage('Checkout SCM') {
             steps {
-                git 'https://github.com/Duarte097/TrabalhoTopicos.git'
+                checkout scm
             }
         }
+
+        stage('Clonar Repositório') {
+            steps {
+                script {
+                    git url: 'https://github.com/Duarte097/TrabalhoTopicos.git', branch: 'main'
+                }
+            }
+        }
+
         stage('Remover Imagem e Container Existentes') {
             steps {
                 script {
-                    try {
-                        bat "docker rm -f ${DOCKER_CONTAINER}"
-                    } catch (Exception e) {
-                        echo "Container não existe ou erro ao remover: ${e.message}"
+                    def containerExists = bat(script: 'docker ps -a | findstr my-container', returnStatus: true) == 0
+                    if (containerExists) {
+                        bat 'docker rm -f my-container'
+                    } else {
+                        echo 'Container não existe.'
                     }
-                    try {
-                        bat "docker rmi ${DOCKER_IMAGE}"
-                    } catch (Exception e) {
-                        echo "Imagem não existe ou erro ao remover: ${e.message}"
+
+                    def imageExists = bat(script: 'docker images | findstr my-image', returnStatus: true) == 0
+                    if (imageExists) {
+                        bat 'docker rmi -f my-image'
+                    } else {
+                        echo 'Imagem não existe.'
                     }
                 }
             }
         }
+
         stage('Build da Imagem Docker') {
             steps {
-                script {
-                    try {
-                        bat "docker build -t ${DOCKER_IMAGE} ."
-                    } catch (Exception e) {
-                        error "Erro ao construir a imagem Docker: ${e.message}"
-                    }
-                }
+                bat 'docker build -t my-image .'
             }
         }
+
         stage('Iniciar Container Docker') {
             steps {
-                script {
-                    try {
-                        bat "docker run -d --name ${DOCKER_CONTAINER} ${DOCKER_IMAGE}"
-                    } catch (Exception e) {
-                        error "Erro ao iniciar o container Docker: ${e.message}"
-                    }
-                }
+                bat 'start /b docker run -d --name my-container my-image'
             }
         }
     }
+
     post {
-        always {
-            script {
-                emailext (
-                    to: 'bioshock197@gmail.com',
-                    subject: "Resultado do Job: ${currentBuild.fullDisplayName}",
-                    body: "Status: ${currentBuild.currentResult}\n\nLink para o build: ${env.BUILD_URL}",
-                    attachLog: true
-                )
-            }
+        failure {
+            emailext (
+                subject: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed",
+                body: "Please go to ${env.BUILD_URL} and verify the build",
+                to: 'bioshock197@gmail.com'
+            )
         }
     }
 }
