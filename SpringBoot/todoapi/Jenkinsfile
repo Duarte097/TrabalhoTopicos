@@ -42,7 +42,7 @@ pipeline {
             script {
                 // Envio de e-mail utilizando plugin de e-mail do Jenkins
                 emailext (
-                    to: 'leonardo_wow@outlook.com',
+                    to: 'bioshock197@gmail.com',
                     subject: "Resultado do Job: ${currentBuild.fullDisplayName}",
                     body: "Status: ${currentBuild.currentResult}\n\nLink para o build: ${env.BUILD_URL}",
                     attachLog: true
