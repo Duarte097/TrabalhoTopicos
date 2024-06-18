@@ -3,30 +3,49 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                // Verificar se a instalação do Git está configurada
+                checkout scm
+            }
+        }
         stage('Build da imagem Docker') {
             steps {
-                sh 'docker build -t todoapi .'
+                bat 'docker build -t todoapi .'
             }
         }
         stage('Remove container e imagem antigos') {
             steps {
-                sh 'docker rm -f todoapi'
-                sh 'docker rmi todoapi'
+                script {
+                    // Remover container antigo, se existir
+                    try {
+                        bat 'docker rm -f todoapi'
+                    } catch (Exception e) {
+                        echo 'Nenhum container antigo encontrado.'
+                    }
+                    // Remover imagem antiga, se existir
+                    try {
+                        bat 'docker rmi todoapi'
+                    } catch (Exception e) {
+                        echo 'Nenhuma imagem antiga encontrada.'
+                    }
+                }
             }
         }
         stage('Crie um novo container') {
             steps {
-                sh 'docker run -d --name todoapi todoapi'
+                bat 'docker run -d --name todoapi todoapi'
             }
         }
         stage('Inicie o container') {
             steps {
-                sh 'docker start todoapi'
+                bat 'docker start todoapi'
             }
         }
     }
     post {
         always {
+            // Verificar se a configuração do servidor de email está correta no Jenkins
             mail to: 'leonardo_wow@outlook.com', subject: 'Job concluído', body: 'O job foi executado com sucesso.'
         }
     }
