@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'todoapi-spring-app' // Substitua pelo nome da sua imagem Docker
-        DOCKER_CONTAINER = 'todoapi' // Substitua pelo nome do seu container Docker
+        DOCKER_IMAGE = 'todoapi-spring-app'
+        DOCKER_CONTAINER = 'todoapi'
     }
     stages {
         stage('Clonar Repositório') {
@@ -33,14 +33,17 @@ pipeline {
         }
         stage('Iniciar Container Docker') {
             steps {
-                bat 'docker run -d --name ${DOCKER_CONTAINER} ${DOCKER_IMAGE}'
+                script {
+                    // Use `docker run` with appropriate flags to run the container
+                    bat "docker run -d --name ${DOCKER_CONTAINER} ${DOCKER_IMAGE}"
+                }
             }
         }
     }
     post {
         always {
             script {
-                // Envio de e-mail utilizando plugin de e-mail do Jenkins
+                // Ensure email configuration is correct and retry sending email
                 emailext (
                     to: 'bioshock197@gmail.com',
                     subject: "Resultado do Job: ${currentBuild.fullDisplayName}",
