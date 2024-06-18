@@ -19,7 +19,7 @@ pipeline {
         stage('Remover Imagem e Container Existentes') {
             steps {
                 script {
-                    def containerExists = bat(script: 'docker ps -a | findstr my-container', returnStatus: true) == 0
+                    def containerExists = bat(script: 'docker ps -a | findstr todoapi', returnStatus: true) == 0
                     if (containerExists) {
                         bat 'docker rm -f todoapi'
                     } else {
