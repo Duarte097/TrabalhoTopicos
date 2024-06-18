@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'mysql' // Substitua pelo nome da sua imagem Docker
+        DOCKER_IMAGE = 'todoapi-spring-app' // Substitua pelo nome da sua imagem Docker
         DOCKER_CONTAINER = 'todoapi' // Substitua pelo nome do seu container Docker
     }
     stages {
@@ -40,7 +40,7 @@ pipeline {
     post {
         always {
             emailext (
-                to: 'leonardo_wow@outlook.com',
+                to: 'bioshock197@gmail.com',
                 subject: "Resultado do Job: ${currentBuild.fullDisplayName}",
                 body: "Status: ${currentBuild.currentResult}\n\nLink para o build: ${env.BUILD_URL}",
                 attachLog: true
