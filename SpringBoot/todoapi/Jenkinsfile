@@ -1,52 +1,50 @@
-#!Downloads/groovy-all-4.0.0-groovydoc
 pipeline {
     agent any
-
+    environment {
+        DOCKER_IMAGE = 'mysql' // Substitua pelo nome da sua imagem Docker
+        DOCKER_CONTAINER = 'todoapi' // Substitua pelo nome do seu container Docker
+    }
     stages {
-        stage('Checkout SCM') {
+        stage('Clonar Repositório') {
             steps {
-                // Verificar se a instalação do Git está configurada
-                checkout scm
+                git 'https://github.com/Duarte097/TrabalhoTopicos.git'
             }
         }
-        stage('Build da imagem Docker') {
-            steps {
-                bat 'docker build -t todoapi .'
-            }
-        }
-        stage('Remove container e imagem antigos') {
+        stage('Remover Imagem e Container Existentes') {
             steps {
                 script {
-                    // Remover container antigo, se existir
                     try {
-                        bat 'docker rm -f todoapi'
+                        sh "docker rm -f ${DOCKER_CONTAINER}"
                     } catch (Exception e) {
-                        echo 'Nenhum container antigo encontrado.'
+                        echo "Container não existe."
                     }
-                    // Remover imagem antiga, se existir
                     try {
-                        bat 'docker rmi todoapi'
+                        sh "docker rmi ${DOCKER_IMAGE}"
                     } catch (Exception e) {
-                        echo 'Nenhuma imagem antiga encontrada.'
+                        echo "Imagem não existe."
                     }
                 }
             }
         }
-        stage('Crie um novo container') {
+        stage('Build da Imagem Docker') {
             steps {
-                bat 'docker run -d --name todoapi todoapi'
+                sh 'docker build -t ${DOCKER_IMAGE} .'
             }
         }
-        stage('Inicie o container') {
+        stage('Iniciar Container Docker') {
             steps {
-                bat 'docker start todoapi'
+                sh 'docker run -d --name ${DOCKER_CONTAINER} ${DOCKER_IMAGE}'
             }
         }
     }
     post {
         always {
-            // Verificar se a configuração do servidor de email está correta no Jenkins
-            mail to: 'leonardo_wow@outlook.com', subject: 'Job concluído', body: 'O job foi executado com sucesso.'
+            emailext (
+                to: 'leonardo_wow@outlook.com',
+                subject: "Resultado do Job: ${currentBuild.fullDisplayName}",
+                body: "Status: ${currentBuild.currentResult}\n\nLink para o build: ${env.BUILD_URL}",
+                attachLog: true
+            )
         }
     }
 }
