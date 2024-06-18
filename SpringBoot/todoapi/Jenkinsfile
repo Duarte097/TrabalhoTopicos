@@ -21,14 +21,14 @@ pipeline {
                 script {
                     def containerExists = bat(script: 'docker ps -a | findstr my-container', returnStatus: true) == 0
                     if (containerExists) {
-                        bat 'docker rm -f my-container'
+                        bat 'docker rm -f todoapi'
                     } else {
                         echo 'Container não existe.'
                     }
 
-                    def imageExists = bat(script: 'docker images | findstr my-image', returnStatus: true) == 0
+                    def imageExists = bat(script: 'docker images | findstr todoapi-spring-app', returnStatus: true) == 0
                     if (imageExists) {
-                        bat 'docker rmi -f my-image'
+                        bat 'docker rmi -f todoapi-spring-app'
                     } else {
                         echo 'Imagem não existe.'
                     }
@@ -38,13 +38,13 @@ pipeline {
 
         stage('Build da Imagem Docker') {
             steps {
-                bat 'docker build -t my-image .'
+                bat 'docker build -t todoapi-spring-app .'
             }
         }
 
         stage('Iniciar Container Docker') {
             steps {
-                bat 'start /b docker run -d --name my-container my-image'
+                bat 'start /b docker run -d --name todoapi todoapi-spring-app'
             }
         }
     }
