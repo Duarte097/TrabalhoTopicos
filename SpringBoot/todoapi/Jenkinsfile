@@ -4,21 +4,15 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
+                // Realiza o checkout do código-fonte do repositório Git
                 checkout scm
-            }
-        }
-
-        stage('Clonar Repositório') {
-            steps {
-                script {
-                    git url: 'https://github.com/Duarte097/TrabalhoTopicos.git', branch: 'main'
-                }
             }
         }
 
         stage('Remover Imagem e Container Existentes') {
             steps {
                 script {
+                    // Verifica se o container 'todoapi' existe e o remove se necessário
                     def containerExists = bat(script: 'docker ps -a | findstr todoapi', returnStatus: true) == 0
                     if (containerExists) {
                         bat 'docker rm -f todoapi'
@@ -26,6 +20,7 @@ pipeline {
                         echo 'Container não existe.'
                     }
 
+                    // Verifica se a imagem 'todoapi-spring-app' existe e a remove se necessário
                     def imageExists = bat(script: 'docker images | findstr todoapi-spring-app', returnStatus: true) == 0
                     if (imageExists) {
                         bat 'docker rmi -f todoapi-spring-app'
@@ -38,12 +33,16 @@ pipeline {
 
         stage('Build da Imagem Docker') {
             steps {
-                bat 'docker build -t todoapi-spring-app .'
+                // Executa o build da imagem Docker a partir do Dockerfile no diretório correto
+                dir('TrabalhoTopicos/SpringBoot/todoapi/') {
+                    bat 'docker build -t todoapi-spring-app .'
+                }
             }
         }
 
         stage('Iniciar Container Docker') {
             steps {
+                // Inicia o container Docker a partir da imagem criada
                 bat 'start /b docker run -d --name todoapi todoapi-spring-app'
             }
         }
@@ -51,6 +50,7 @@ pipeline {
 
     post {
         failure {
+            // Em caso de falha, envia um e-mail de notificação
             emailext (
                 subject: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed",
                 body: "Please go to ${env.BUILD_URL} and verify the build",
