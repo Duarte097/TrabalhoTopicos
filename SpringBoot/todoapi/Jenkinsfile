@@ -35,7 +35,7 @@ pipeline {
             steps {
                 // Executa o build da imagem Docker a partir do Dockerfile no diretório correto
                 dir('TrabalhoTopicos/SpringBoot/todoapi/') {
-                    bat 'docker build -t todoapi-spring-app .'
+                    bat 'docker build -t mysql .'
                 }
             }
         }
@@ -43,7 +43,7 @@ pipeline {
         stage('Iniciar Container Docker') {
             steps {
                 // Inicia o container Docker a partir da imagem criada
-                bat 'start /b docker run -d --name todoapi todoapi-spring-app'
+                bat 'start /b docker run -d --name todoapi mysql'
             }
         }
     }
