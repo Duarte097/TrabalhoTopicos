@@ -1,61 +1,58 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = 'IMAGES'
+        DOCKER_CONTAINER = 'todoapi'
+    }
+
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
-                // Realiza o checkout do código-fonte do repositório Git
-                checkout scm
+                // Clone o repositório do GitHub
+                git credentialsId: 'Duarte097', url: 'https://github.com/Duarte097/TrabalhoTopicos.git'
             }
         }
 
-        stage('Remover Imagem e Container Existentes') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Verifica se o container 'todoapi' existe e o remove se necessário
-                    def containerExists = bat(script: 'docker ps -a | findstr todoapi', returnStatus: true) == 0
-                    if (containerExists) {
-                        bat 'docker rm -f todoapi'
-                    } else {
-                        echo 'Container não existe.'
-                    }
-
-                    // Verifica se a imagem 'todoapi-spring-app' existe e a remove se necessário
-                    def imageExists = bat(script: 'docker images | findstr todoapi-spring-app', returnStatus: true) == 0
-                    if (imageExists) {
-                        bat 'docker rmi -f todoapi-spring-app'
-                    } else {
-                        echo 'Imagem não existe.'
-                    }
+                    // Remover container e imagem Docker existentes
+                    sh """
+                    docker rm -f ${DOCKER_CONTAINER} || true
+                    docker rmi ${DOCKER_IMAGE} || true
+                    """
+                    // Build da imagem Docker
+                    sh 'docker build -t ${DOCKER_IMAGE} .'
                 }
             }
         }
 
-        stage('Build da Imagem Docker') {
+        stage('Deploy Docker Container') {
             steps {
-                // Executa o build da imagem Docker a partir do Dockerfile no diretório correto
-                dir('TrabalhoTopicos/SpringBoot/todoapi/') {
-                    bat 'docker build -t mysql .'
+                script {
+                    // Iniciar o container Docker
+                    sh 'docker run -d --name ${DOCKER_CONTAINER} ${DOCKER_IMAGE}'
                 }
-            }
-        }
-
-        stage('Iniciar Container Docker') {
-            steps {
-                // Inicia o container Docker a partir da imagem criada
-                bat 'start /b docker run -d --name todoapi mysql'
             }
         }
     }
 
     post {
-        failure {
-            // Em caso de falha, envia um e-mail de notificação
-            emailext (
-                subject: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed",
-                body: "Please go to ${env.BUILD_URL} and verify the build",
-                to: 'bioshock197@gmail.com'
+        always {
+            // Notificar por e-mail ao final da execução
+            emailext(
+                to: 'bioshock197@gmail.com',
+                subject: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${currentBuild.currentResult})",
+                body: """<p>O Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' terminou com status: ${currentBuild.currentResult}.</p>
+                         <p>Veja mais detalhes no Jenkins: ${env.BUILD_URL}</p>""",
+                mimeType: 'text/html'
             )
         }
+    }
+
+    triggers {
+        // Agendar para execução diária
+        cron('H 0 * * *')
     }
 }
