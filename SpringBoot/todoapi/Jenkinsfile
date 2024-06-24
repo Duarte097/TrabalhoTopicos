@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'IMAGES'
-        DOCKER_CONTAINER = 'todoapi'
+        DOCKER_IMAGE = 'todoapi-spring-app'
+        DOCKER_CONTAINER = 'todoapi-spring-app'
     }
 
     stages {
