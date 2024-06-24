@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone o repositório do GitHub
-                git credentialsId: 'Duarte097', url: 'https://github.com/Duarte097/TrabalhoTopicos.git'
+                bat 'git clone https://github.com/Duarte097/TrabalhoTopicos.git'
             }
         }
 
@@ -18,12 +18,11 @@ pipeline {
             steps {
                 script {
                     // Remover container e imagem Docker existentes
-                    sh """
-                    docker rm -f ${DOCKER_CONTAINER} || true
-                    docker rmi ${DOCKER_IMAGE} || true
-                    """
+                    bat "docker rm -f ${DOCKER_CONTAINER} || true"
+                    bat "docker rmi ${DOCKER_IMAGE} || true"
+
                     // Build da imagem Docker
-                    sh 'docker build -t ${DOCKER_IMAGE} .'
+                    bat "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
@@ -32,7 +31,7 @@ pipeline {
             steps {
                 script {
                     // Iniciar o container Docker
-                    sh 'docker run -d --name ${DOCKER_CONTAINER} ${DOCKER_IMAGE}'
+                    bat "docker run -d --name ${DOCKER_CONTAINER} ${DOCKER_IMAGE}"
                 }
             }
         }
