@@ -9,10 +9,16 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Clone o repositório do GitHub
-                bat 'git clone https://github.com/Duarte097/TrabalhoTopicos.git'
+                script {
+                    if (!fileExists('TrabalhoTopicos/.git')) {
+                        git url: 'https://github.com/Duarte097/TrabalhoTopicos.git'
+                    } else {
+                        echo 'Diretório já existe, pulando o clone.'
+                    }
+                }
             }
         }
+
 
         stage('Build Docker Image') {
             steps {
